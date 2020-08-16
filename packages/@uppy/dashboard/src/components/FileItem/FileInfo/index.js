@@ -1,51 +1,54 @@
-const { h } = require('preact')
-const prettierBytes = require('@transloadit/prettier-bytes')
-const truncateString = require('../../../utils/truncateString')
+const { h } = require("preact");
+const prettierBytes = require("@transloadit/prettier-bytes");
+const truncateString = require("../../../utils/truncateString");
 
-const renderAcquirerIcon = (acquirer, props) =>
-  <span title={props.i18n('fileSource', { name: acquirer.name })}>
+const renderAcquirerIcon = (acquirer, props) => (
+  <span title={props.i18n("fileSource", { name: acquirer.name })}>
     {acquirer.icon()}
   </span>
+);
 
-const renderFileSource = (props) => (
+const renderFileSource = (props) =>
   props.file.source &&
-  props.file.source !== props.id &&
+  props.file.source !== props.id && (
     <div class="uppy-Dashboard-Item-sourceIcon">
-      {props.acquirers.map(acquirer => {
+      {props.acquirers.map((acquirer) => {
         if (acquirer.id === props.file.source) {
-          return renderAcquirerIcon(acquirer, props)
+          return renderAcquirerIcon(acquirer, props);
         }
       })}
     </div>
-)
+  );
 
 const renderFileName = (props) => {
   // Take up at most 2 lines on any screen
-  let maxNameLength
+  let maxNameLength;
   // For very small mobile screens
   if (props.containerWidth <= 352) {
-    maxNameLength = 35
-  // For regular mobile screens
+    maxNameLength = 35;
+    // For regular mobile screens
   } else if (props.containerWidth <= 576) {
-    maxNameLength = 60
-  // For desktops
+    maxNameLength = 60;
+    // For desktops
   } else {
-    maxNameLength = 30
+    maxNameLength = 30;
   }
 
-  return (
-    <div class="uppy-Dashboard-Item-name" title={props.file.meta.name}>
-      {truncateString(props.file.meta.name, maxNameLength)}
-    </div>
-  )
-}
+  const metaName = props.file.meta.original || props.file.meta.name;
 
-const renderFileSize = (props) => (
-  props.file.data.size &&
+  return (
+    <div class="uppy-Dashboard-Item-name" title={metaName}>
+      {truncateString(metaName, maxNameLength)}
+    </div>
+  );
+};
+
+const renderFileSize = (props) =>
+  props.file.data.size && (
     <div class="uppy-Dashboard-Item-statusSize">
       {prettierBytes(props.file.data.size)}
     </div>
-)
+  );
 
 const ErrorButton = ({ file, onClick }) => {
   if (file.error) {
@@ -60,14 +63,17 @@ const ErrorButton = ({ file, onClick }) => {
       >
         ?
       </span>
-    )
+    );
   }
-  return null
-}
+  return null;
+};
 
-module.exports = function FileInfo (props) {
+module.exports = function FileInfo(props) {
   return (
-    <div class="uppy-Dashboard-Item-fileInfo" data-uppy-file-source={props.file.source}>
+    <div
+      class="uppy-Dashboard-Item-fileInfo"
+      data-uppy-file-source={props.file.source}
+    >
       {renderFileName(props)}
       <div class="uppy-Dashboard-Item-status">
         {renderFileSize(props)}
@@ -75,10 +81,10 @@ module.exports = function FileInfo (props) {
         <ErrorButton
           file={props.file}
           onClick={() => {
-            alert(props.file.error)
+            alert(props.file.error);
           }}
         />
       </div>
     </div>
-  )
-}
+  );
+};
